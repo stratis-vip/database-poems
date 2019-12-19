@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/stratis-vip/database-poems#readme",
   "files": [
-    "lib/**/*.js"
+    "**/*.js",
+    "**/*.d.ts"
   ]
 }
