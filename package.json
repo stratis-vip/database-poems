@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "jest --config jestconfig.json",
+    "test": "jest --config jestconfig.json --watch",
     "start": "node build/intest.js",
     "build": "tsc",
     "format": "prettier --write \"**/*.ts\" \"**/*.js\"",

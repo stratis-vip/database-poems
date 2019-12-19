@@ -1,5 +1,9 @@
-import Respond, { stCodes } from './models/Respond'
-import TblTexts from './models/tblTexts'
+import RespondTexts from './models/respondTexts'
+import { Nullable, stCodes } from './models/types'
 
-export default TblTexts
-export { Respond, stCodes }
+import { MALLFORMED_RESPONSE_ERROR } from './models/consts'
+import { createfromRespond } from './models/general/general-tbls'
+import TblCategory from './models/tblCategory'
+import TblText from './models/tblText'
+
+export { TblCategory, TblText, RespondTexts, stCodes, MALLFORMED_RESPONSE_ERROR, Nullable, createfromRespond }
