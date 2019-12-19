@@ -11,7 +11,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json"
   },
-  "author": "",
+  "author": "Stratis Christodoulou",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^24.0.24",
@@ -22,6 +22,14 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.3"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stratis-vip/database-poems.git"
+  },
+  "bugs":{
+    "url": "https://github.com/stratis-vip/database-poems/issues"
+  },
+  "homepage": "https://github.com/stratis-vip/database-poems#readme",
   "files": [
     "lib/**/*.js"
   ]
