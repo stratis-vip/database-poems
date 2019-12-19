@@ -1,4 +1,4 @@
 .vscode
-intest.js
-/lib
 node_modules
+*.js
+models/*.js

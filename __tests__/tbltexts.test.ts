@@ -1,4 +1,4 @@
-import TblTexts, { Respond, stCodes } from '../lib'
+import TblTexts, { Respond, stCodes } from '../'
 
 const respond: Respond = {
   code: 200,
