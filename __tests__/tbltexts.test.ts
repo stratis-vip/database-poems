@@ -1,4 +1,4 @@
-import TblTexts, {Respond,stCodes} from '../lib'
+import TblTexts, { Respond, stCodes } from '../lib'
 
 const respond: Respond = {
   code: 200,
@@ -15,15 +15,15 @@ const respond: Respond = {
   status: stCodes.success,
 }
 test('Creates a new object', () => {
-    const t = new TblTexts()
-    expect(t).not.toBe(null)
+  const t = new TblTexts()
+  expect(t).not.toBe(null)
 })
 
-test('Reads a Respond', ()=>{
-    const t = new TblTexts()
-    t.fromRespond(respond)
-    expect(t.categoryId).toBe(1)
-    expect(t.id).toBe(30)
-    expect(t.text).toBe('POEM TEXT')
-    expect(t.textId).toBe(12)
+test('Reads a Respond', () => {
+  const t = new TblTexts()
+  t.fromRespond(respond)
+  expect(t.categoryId).toBe(1)
+  expect(t.id).toBe(30)
+  expect(t.text).toBe('POEM TEXT')
+  expect(t.textId).toBe(12)
 })
