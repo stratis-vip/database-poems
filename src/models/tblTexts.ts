@@ -10,11 +10,11 @@ interface IText {
 }
 
 class TblTexts {
-  private id: Nullable<number> = null
-  private categoryId: Nullable<number> = null
-  private date: string = ''
-  private text: string = ''
-  private textId: Nullable<number> = null
+  public id: Nullable<number> = null
+  public categoryId: Nullable<number> = null
+  public date: string = ''
+  public text: string = ''
+  public textId: Nullable<number> = null
 
 
   constructor(id?: number, text?: string, textId?: number, categoryId?: number, date?: string) {
