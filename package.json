@@ -1,6 +1,6 @@
 {
   "name": "database-poems",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -10,11 +10,11 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "prepare" : "npm run build",
-    "prepublishOnly" : "npm test && npm run lint",
-    "preversion" : "npm run lint",
-    "version" : "npm run format && git add -A src",
-    "postversion" : "git push && git push --tags"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "author": "Stratis Christodoulou",
   "license": "ISC",
@@ -31,7 +31,7 @@
     "type": "git",
     "url": "https://github.com/stratis-vip/database-poems.git"
   },
-  "bugs":{
+  "bugs": {
     "url": "https://github.com/stratis-vip/database-poems/issues"
   },
   "homepage": "https://github.com/stratis-vip/database-poems#readme",

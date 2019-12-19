@@ -16,7 +16,6 @@ class TblTexts {
   public text: string = ''
   public textId: Nullable<number> = null
 
-
   constructor(id?: number, text?: string, textId?: number, categoryId?: number, date?: string) {
     id = id
     text = text
@@ -26,7 +25,9 @@ class TblTexts {
   }
 
   public fromRespond(respond: Respond) {
-    if (!respond || respond.status !== stCodes.success) { return }
+    if (!respond || respond.status !== stCodes.success) {
+      return
+    }
 
     const data = respond.data[0] as IText
     if (data !== undefined) {
