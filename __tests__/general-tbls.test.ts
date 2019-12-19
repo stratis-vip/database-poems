@@ -1,4 +1,4 @@
-import {createfromRespond, MALLFORMED_RESPONSE_ERROR, RespondTexts, stCodes, TblText } from '..'
+import { createfromRespond, MALLFORMED_RESPONSE_ERROR, RespondTexts, stCodes, TblText } from '..'
 import GeneralRespond from '../models/general/general-respond'
 import RespondCategories from '../models/respondCategories'
 import TblCategory from '../models/tblCategory'

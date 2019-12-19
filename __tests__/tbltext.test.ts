@@ -1,4 +1,4 @@
-import {TblText} from '..'
+import { TblText } from '..'
 
 describe('create new Object', () => {
   test('Creates a new object from null', () => {
