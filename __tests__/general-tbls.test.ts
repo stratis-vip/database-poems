@@ -1,5 +1,6 @@
 import { createfromRespond, MALLFORMED_RESPONSE_ERROR, RespondTexts, stCodes, TblText } from '..'
 import GeneralRespond from '../models/general/general-respond'
+import { Delete, Insert } from '../models/general/general-tbls'
 import RespondCategories from '../models/respondCategories'
 import TblCategory from '../models/tblCategory'
 
@@ -34,7 +35,7 @@ describe('Create object tblText from RespondTexts', () => {
   })
 })
 
-describe('Create object tblCategory from RespondCategories', () => {
+describe('Insert object tblCategory from RespondCategories', () => {
   const respondCategory: RespondCategories = {
     code: 200,
     data: [
@@ -48,11 +49,21 @@ describe('Create object tblCategory from RespondCategories', () => {
   }
   test('Reads a RespondCategory', () => {
     const t: TblCategory = createfromRespond(TblCategory, respondCategory)
-    expect(t.id).toBe(1)
-    expect(t.description).toBe('Ποιητικά')
+
+    console.log(t)
   })
 
   test('Raise an exception on bad RespondCategories', () => {
     expect(() => createfromRespond(TblCategory, badResponseText)).toThrowError(MALLFORMED_RESPONSE_ERROR)
   })
+})
+
+test('Insert', () => {
+  expect(Insert(2, `sdnls"klse'sfdf`, `2012-12-22`)).toBe(
+    `INSERT INTO texts (categoryId, text, date, textId) VALUES (3, 'tria', '2013-04-05', 23), (4, 'tessera', '2013-04-05', 24)`,
+  )
+})
+
+test('Delete', () => {
+  expect(Delete(2)).toBe(`DELETE FROM texts WHERE id = 2`)
 })

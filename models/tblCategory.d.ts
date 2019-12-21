@@ -1,10 +1,10 @@
-import { Nullable } from '..'
-import DbTbl from './general/general-tbls'
-import RespondCategories from './respondCategories'
+import DbTbl from './general/general-tbls';
+import RespondCategories from './respondCategories';
+import { IJsonObject } from './types';
 declare class TblCategory extends DbTbl {
-  id: Nullable<number>
-  description: string
-  constructor(id?: number, description?: string)
-  fill(res: RespondCategories): void
+    constructor();
+    fillTable(res: RespondCategories): void;
+    insert(values: IJsonObject[]): string;
+    readonly fieldsArray: string[];
 }
-export default TblCategory
+export default TblCategory;

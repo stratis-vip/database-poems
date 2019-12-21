@@ -1,6 +1,6 @@
 import RespondTexts from '../models/respondTexts'
 
-describe('Create object RespondTexts', () => {
+describe('Insert object RespondTexts', () => {
   test('Created not null', () => {
     const t = new RespondTexts()
     expect(t).not.toBe(null)

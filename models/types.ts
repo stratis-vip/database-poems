@@ -19,3 +19,7 @@ export interface IText extends IBaseDBTable {
 export interface ICategory extends IBaseDBTable {
   description: string
 }
+
+export interface IJsonObject {
+  [key: string]: any
+}

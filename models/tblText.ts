@@ -18,13 +18,14 @@ export default class TblText extends DbTbl {
    */
   constructor(text?: string, textId?: Nullable<number>, categoryId?: Nullable<number>, date?: string) {
     super()
+    this.name = 'Texts'
     this.text = text || ''
     this.textId = textId || null
     this.categoryId = categoryId || null
     this.date = date || ''
   }
 
-  public fill(res: RespondTexts) {
+  public fillTable(res: RespondTexts) {
     const text = res.data[0]
     this.text = text.text
     this.textId = text.textId

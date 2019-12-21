@@ -1,6 +1,6 @@
 import RespondCategories from '../models/respondCategories'
 
-describe('Create object RespondCategories', () => {
+describe('Insert object RespondCategories', () => {
   test('Created not null', () => {
     const t = new RespondCategories()
     expect(t).not.toBe(null)
