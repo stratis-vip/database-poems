@@ -1,7 +1,7 @@
-import GeneralRespond from './general/general-respond'
-import { IText } from './types'
+import GeneralRespond from './general/general-respond';
+import { IText } from './types';
 declare class RespondTexts extends GeneralRespond {
-  data: IText[]
-  constructor()
+    data: IText[];
+    constructor();
 }
-export default RespondTexts
+export default RespondTexts;

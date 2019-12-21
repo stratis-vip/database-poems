@@ -1,10 +1,10 @@
-import DbTbl from './general/general-tbls'
-import RespondCategories from './respondCategories'
-import { IJsonObject } from './types'
+import DbTbl from './general/general-tbls';
+import RespondCategories from './respondCategories';
+import { IJsonObject } from './types';
 declare class TblCategory extends DbTbl {
-  constructor()
-  fillTable(res: RespondCategories): void
-  insert(values: IJsonObject[]): string
-  readonly fieldsArray: string[]
+    constructor();
+    fillTable(res: RespondCategories): void;
+    insert(values: IJsonObject[]): string;
+    get fieldsArray(): string[];
 }
-export default TblCategory
+export default TblCategory;
