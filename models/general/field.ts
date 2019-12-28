@@ -6,21 +6,29 @@ export default class Field {
   private type: DataTypes
   private size: Nullable<number>
   private allowNull: boolean
+  private autoInc: boolean = false
 
-  constructor(name: string, type: DataTypes, allowNull: boolean = false, size: Nullable<number> = null) {
+  constructor(name: string, type: DataTypes, autoInc: boolean = false, allowNull: boolean = false, size: Nullable<number> = null) {
     this.name = name
     this.type = type
     this.size = size
+    this.autoInc = autoInc
     this.allowNull = allowNull
     if (this.type === DataTypes.Characters && size === null) {
       this.size = 65535
     }
   }
+  
   /** Returns field's name */
   get getName(): string {
     return this.name
   }
 
+   set setAutoInc(value:boolean) {
+    if (this.type === DataTypes.Numeral && value !== this.autoInc){
+        this.autoInc = value
+    }
+  }
   /** check if value is in the acceptable limits
    *
    * @param value

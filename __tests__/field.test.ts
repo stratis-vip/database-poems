@@ -11,7 +11,7 @@ describe('Field checks', () => {
   })
 
   test('Creates an allow null 100 character long string field', () => {
-    const t = new Field('id', DataTypes.Characters, true, 100)
+    const t = new Field('id', DataTypes.Characters, false, true, 100)
     expect(t).not.toBeNull()
     expect(t.checkIfValueIsAcceptable('a')).toBeTruthy()
     expect(t.checkIfValueIsAcceptable(null)).toBeTruthy()

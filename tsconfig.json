@@ -6,7 +6,8 @@
     // "outDir": "./lib",                        /* Redirect output structure to the directory. */
     "strict": true,                           /* Enable all strict type-checking options. */
     "strictNullChecks": true,                 /* Enable strict null checks. */
-    "lib": ["es2015","DOM"]                         /* fix babel error */
+    "lib": ["es2015","DOM"],                        /* fix babel error */
+    "esModuleInterop": true
     },
   "include": ["**/*.ts"],
   "exclude": ["node_modules/**/*", "**/__tests__/*","models/*.d.ts"]

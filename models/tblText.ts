@@ -1,6 +1,6 @@
 import DbTbl from './general/general-tbls'
 import RespondTexts from './respondTexts'
-import { Nullable } from './types'
+import { IJsonObject, Nullable } from './types'
 
 export default class TblText extends DbTbl {
   public id: Nullable<number> = null
@@ -26,12 +26,18 @@ export default class TblText extends DbTbl {
   }
 
   public fillTable(res: RespondTexts) {
+    // TODO add rows not a single row
     const text = res.data[0]
     this.text = text.text
     this.textId = text.textId
     this.categoryId = text.categoryId
     this.date = text.date
     this.id = text.id
+    return 1
+  }
+
+  public addData(row:IJsonObject):number {
+    return 1
   }
 
   public setId(value: number) {
