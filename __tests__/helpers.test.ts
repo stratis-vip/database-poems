@@ -1,4 +1,4 @@
-import {deleteProperty, equalArrays} from '../models/helpers'
+import {deleteProperty, equalArrays, joinWithComma, joinWithAND} from '../models/helpers'
 
 const a = [1,2,3]
 const b = [3,1,2]
@@ -53,5 +53,29 @@ describe('Test equalArrays', ()=>{
     
     test('a and b are arrays on array', ()=>{
         expect(equalArrays([1,[1,2],[3],[1]],[[3],[1],[1,2],1])).toBe(true)  
+    })
+})
+
+describe('Test joinWithComma', ()=>{
+    test('emtpy array', ()=>{
+        expect(joinWithComma([])).toBe('')
+    })
+
+    test('string array', ()=>{
+        expect(joinWithComma(['id'])).toBe('id')
+        expect(joinWithComma(['id', 'test'])).toBe('id, test')
+        expect(joinWithComma(['id', 'test', 'call'])).toBe('id, test, call')
+        expect(joinWithComma([5])).toBe('5')
+        expect(joinWithComma([5, 6, 7, 8])).toBe('5, 6, 7, 8')
+    })
+})
+describe('Test joinWithAND', ()=>{
+
+    test('string array', ()=>{
+        expect(joinWithAND(['id'])).toBe('id')
+        expect(joinWithAND(['id', 'test'])).toBe('id AND test')
+        expect(joinWithAND(['id', 'test', 'call'])).toBe('id AND test AND call')
+        expect(joinWithAND([5])).toBe('5')
+        expect(joinWithAND([5, 6, 7, 8])).toBe('5 AND 6 AND 7 AND 8')
     })
 })

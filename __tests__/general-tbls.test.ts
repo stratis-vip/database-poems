@@ -1,4 +1,4 @@
-import { EMPTY_VALUES } from '../models/consts'
+import { EMPTY_VALUES, FIELD_NOT_EXIST } from '../models/consts'
 import { DataTypes } from '../models/general/data-types'
 import Field from '../models/general/field'
 import DbTbl from '../models/general/general-tbls'
@@ -24,7 +24,9 @@ describe('create new Object', () => {
     expect(t.dbValues).toStrictEqual([])
     expect(t.fieldsCount).toBe(1)
   })
+})
 
+describe('Field operations', () => {
   test('Add Field', () => {
     t.addField(f)
     expect(t.fieldsArray).toStrictEqual(['id', 'testField'])
@@ -50,10 +52,13 @@ describe('create new Object', () => {
     expect(t.findField('testField')).toStrictEqual(f)
     expect(t.findField('testFieldOne')).toStrictEqual(f1)
   })
+})
 
+describe('Data operations', () => {
   test('Add Data', () => {
     expect(t.addData({ id: 1 })).toBe(1)
     expect(t.queryInsert()).toBe(`INSERT INTO Test (id) VALUES (1)`)
+    expect(t.addData({ id: 1 })).toBe(0)
   })
 
   test('Add Data Error', () => {
@@ -66,7 +71,53 @@ describe('create new Object', () => {
     expect(t.addData({ id: 1, testField: 'test 1', testFieldOne: 'testOne 1' })).toBe(1)
     expect(t.queryInsert()).toBe(`INSERT INTO Test (id, testField, testFieldOne) VALUES (1, 'test 1', 'testOne 1')`)
   })
+})
 
+describe('Queries', () => {
+  test('Create insert Query', ()=>{
+    t.addField(f)
+    t.addData({ id: 1, testField: 'test 1' })
+    expect(t.queryInsert()).toBe(`INSERT INTO Test (id, testField) VALUES (1, 'test 1')`)
+    expect(t.queryDelete('id',1)).toBe(`DELETE FROM Test WHERE id in ('1')`)
+    expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
+  })
+
+  test('Create Delete Query', ()=>{
+    t.addField(f)
+    t.addData({ id: 1, testField: 'test 1' })
+    expect(t.queryDelete('id',1)).toBe(`DELETE FROM Test WHERE id in ('1')`)
+    expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
+  })
+
+  test('Create Update Query', ()=>{
+    t.addFields([f,f1])
+    t.addData({ id: 1, testField: 'test 1' ,testFieldOne:'testfieldone 1'})
+    expect(t.queryUpdate({testField: 'dokimes', testFieldOne: 'dokimes one'},'id',1))
+    .toBe(`UPDATE Test SET testField = 'dokimes', testFieldOne = 'dokimes one' WHERE id in ('1')`)
+    expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
+    expect(()=>t.queryUpdate({testerField: 'dokimes', testFieldOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
+    expect(()=>t.queryUpdate({testField: 'dokimes', testFielerdOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
+    expect(()=>t.queryUpdate({testField: 'dokimes', testFieldOne: 'dokimes one'},'ids',1)).toThrowError(FIELD_NOT_EXIST)
+  })
+
+  test('Create Select Query', ()=>{
+    t.addFields([f,f1])
+    t.addData({ id: 1, testField: 'test 1' ,testFieldOne:'testfieldone 1'})
+    expect(t.querySelect()).toBe(`SELECT * FROM Test`)
+    expect(t.querySelect([])).toBe(`SELECT * FROM Test`)
+    expect(t.querySelect([],[])).toBe(`SELECT * FROM Test`)
+    expect(t.querySelect([],[],[])).toBe(`SELECT * FROM Test`)
+    expect(t.querySelect([],[],[{column:'id', value:1}])).toBe(`SELECT * FROM Test WHERE id in ('1')`)
+    expect(t.querySelect([],[],[{column:'id', value:1}, {column:'testField', value:'test 1'}]))
+    .toBe(`SELECT * FROM Test WHERE id in ('1') AND testField in ('test 1')`)
+
+
+
+    // expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
+    // expect(()=>t.queryUpdate({testerField: 'dokimes', testFieldOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
+    // expect(()=>t.queryUpdate({testField: 'dokimes', testFielerdOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
+    // expect(()=>t.queryUpdate({testField: 'dokimes', testFieldOne: 'dokimes one'},'ids',1)).toThrowError(FIELD_NOT_EXIST)
+  })
 
 
 })

@@ -1,6 +1,6 @@
-import { EMPTY_TABLE, EMPTY_VALUES } from '../consts'
+import { EMPTY_TABLE, EMPTY_VALUES, FIELD_NOT_EXIST } from '../consts'
 import * as helpers from '../helpers'
-import { deleteProperty } from '../helpers'
+import { deleteProperty, joinWithAND, joinWithComma } from '../helpers'
 import { IGeneralRespond, IJsonObject } from '../types'
 import { DataTypes } from './data-types'
 import Field from './field'
@@ -30,7 +30,15 @@ export default class DbTbl {
   }
 
   public checkIfRowIsValid(row: any): boolean {
-    return true
+    let retVal = true
+    this.indices.forEach(index => {
+      const vals = this.values.map(v => v[index])
+      const indexOf = vals.some(val => val === row[index])
+      if (indexOf) {
+        retVal = false
+      }
+    })
+    return retVal
   }
 
   /** add a data in table in form { fieldId: fieldValue } */
@@ -47,11 +55,11 @@ export default class DbTbl {
     const retVal = this.findFieldIndex(fieldName)
     let removedFieldsCount = 0
     if (this.findFieldIndex(fieldName) >= 0) {
-      removedFieldsCount  = this.fields.splice(retVal, 1).length
+      removedFieldsCount = this.fields.splice(retVal, 1).length
       deleteProperty(fieldName, this.values)
-      this.indices.splice(this.indices.findIndex(v => fieldName===v),1)
+      this.indices.splice(this.indices.findIndex(v => fieldName === v), 1)
 
-    } 
+    }
     return removedFieldsCount
   }
 
@@ -105,9 +113,61 @@ export default class DbTbl {
     return createInsert(this.name, this.fieldsArray, this.values)
   }
 
+  /** returns a string with INSERT mysql compliant query.
+   * If there are no fileds or values in the table, throws an error! 
+   */
+  public queryDelete(column: string, value: any): string {
+    if (this.findFieldIndex(column) === -1) {
+      throw Error(FIELD_NOT_EXIST)
+    }
+    return `DELETE FROM ${this.name} WHERE ${column} in ('${value}')`
+  }
+
+  public queryUpdate(row: IJsonObject, id: any, idValue: any): string {
+    const rowIds = getRowIds(row)
+    if (this.findFieldIndex(id) === -1) {
+      throw Error(FIELD_NOT_EXIST)
+    }
+    const ar = []
+    for (let i = 0; i !== rowIds.length; i++) {
+      if (this.findFieldIndex(rowIds[i]) === -1) {
+        throw Error(FIELD_NOT_EXIST)
+      }
+      ar.push(`${rowIds[i]} = '${row[rowIds[i]]}'`)
+    }
+    return `UPDATE ${this.name} SET ${joinWithComma(ar)} WHERE ${id} in ('${idValue}')`
+  }
+
+  public querySelect(columns?: string[], from?: string[], where?: Array<{ column: string, value: any }> | []): string {
+    let retVal = 'SELECT '
+    if (!columns || columns.length === 0) {
+      retVal += `* `
+    } else {
+      retVal += `${joinWithComma(columns)} `
+    }
+    retVal += 'FROM '
+    if (!from || (from && from.length === 0)) {
+      retVal += this.name
+    } else {
+      retVal += joinWithComma(from!)
+    }
+
+    if (!where || (where && where.length === 0) ){
+      retVal += ``
+    } else {
+      const ar = []
+      for (let i=0; i!== where.length; ++i){
+        ar.push(`${where[i].column} in ('${where[i].value}')`)
+      }
+      retVal += ` WHERE ${joinWithAND(ar)}`
+    }
+    return retVal
+  }
+
+
   /** check if rowObject has the same keys with table fields */
   private checkIfDataIsValid(row: IJsonObject): boolean {
-    const rowIds = Object.keys(row)
+    const rowIds = getRowIds(row)
     if (rowIds.length !== this.fields.length) { return false } else {
       return helpers.equalArrays(rowIds, this.fieldsArray)
     }
@@ -153,3 +213,8 @@ const createInsert = (to: string, columns: string[], values: IJsonObject[]): str
   })
   return retVal
 }
+
+function getRowIds(row: IJsonObject) {
+  return Object.keys(row)
+}
+

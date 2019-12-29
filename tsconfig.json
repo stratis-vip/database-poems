@@ -7,7 +7,8 @@
     "strict": true,                           /* Enable all strict type-checking options. */
     "strictNullChecks": true,                 /* Enable strict null checks. */
     "lib": ["es2015","DOM"],                        /* fix babel error */
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "sourceMap": true
     },
   "include": ["**/*.ts"],
   "exclude": ["node_modules/**/*", "**/__tests__/*","models/*.d.ts"]

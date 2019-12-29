@@ -50,3 +50,24 @@ export const deleteProperty= (id:string, obj:IJsonObject[]) =>{
     return retVal
 
 }
+
+const joinWithValue = (row:any[], value:string):string=>{
+    let retVal = ``
+    if (row && row.length !== 0){
+        for (let i=0; i !== row.length; i++){
+            retVal += row[i].toString()
+            if (i+1 < row.length){
+                retVal += `${value} `
+            }
+        }
+    }
+    return retVal
+}
+
+export const joinWithComma = (row:any[]):string=>{
+    return joinWithValue(row, ',')
+}
+
+export const joinWithAND = (row:any[]):string=>{
+    return joinWithValue(row, ' AND')
+}
