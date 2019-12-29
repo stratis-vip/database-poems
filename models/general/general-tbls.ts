@@ -1,10 +1,11 @@
-import { MALLFORMED_RESPONSE_ERROR, TABLES_LENGTH_DIFFERS, EMPTY_VALUES, EMPTY_TABLE } from '../consts'
-import { IJsonObject } from '../types'
+import { EMPTY_TABLE, EMPTY_VALUES } from '../consts'
+import * as helpers from '../helpers'
+import { deleteProperty } from '../helpers'
+import { IGeneralRespond, IJsonObject } from '../types'
 import { DataTypes } from './data-types'
 import Field from './field'
-import GeneralRespond, { checkRespond } from './general-respond'
 
-export default abstract class DbTbl {
+export default class DbTbl {
   protected name: string = ''
   protected fields: Field[] = []
   protected values: IJsonObject[] = []
@@ -15,16 +16,43 @@ export default abstract class DbTbl {
     this.addField(new Field('id', DataTypes.Numeral, true))
     this.indices.push('id')
   }
-  public abstract fillTable(res: any): number
-  public abstract checkIfRowIsValid(row: any): boolean
 
+  public fillTable(res: IGeneralRespond<any>): number {
+    const { data } = res
+    let count = 0;
+
+    if (data.length !== 0) {
+      for (let i = 0; i !== data.length; i++) {
+        count += this.addData(data[i])
+      }
+    }
+    return count
+  }
+
+  public checkIfRowIsValid(row: any): boolean {
+    return true
+  }
+
+  /** add a data in table in form { fieldId: fieldValue } */
   public addData(row: IJsonObject): number {
-    if (Object.keys(row).length !== this.fields.length) { return 0 }
-    if (this.checkIfRowIsValid(row)) {
+    if (this.checkIfRowIsValid(row) && this.checkIfDataIsValid(row)) {
       const beforeLen = this.values.length
+      // TODO check index
       return this.values.push(row) - beforeLen
     }
     return 0
+  }
+
+  public removeField(fieldName: string) {
+    const retVal = this.findFieldIndex(fieldName)
+    let removedFieldsCount = 0
+    if (this.findFieldIndex(fieldName) >= 0) {
+      removedFieldsCount  = this.fields.splice(retVal, 1).length
+      deleteProperty(fieldName, this.values)
+      this.indices.splice(this.indices.findIndex(v => fieldName===v),1)
+
+    } 
+    return removedFieldsCount
   }
 
   /** Add the field to Table
@@ -44,27 +72,49 @@ export default abstract class DbTbl {
   }
 
   /** Returns the number of fields in table */
-  get count(): number {
+  get fieldsCount(): number {
     return this.fields.length
   }
 
+  /** returns an array of strings with field names */
   get fieldsArray(): string[] {
     const a: string[] = []
     this.fields.map(f => a.push(f.getName))
     return a
   }
 
+  /** returns the field with name fieldName or null if doesn't exists one */
   public findField(fieldName: string): Field | null {
     const retVal = this.fields.find(s => s.getName === fieldName)
     return retVal === undefined ? null : retVal
   }
 
+  /** returns the field with name fieldName or null if doesn't exists one */
+  public findFieldIndex(fieldName: string): number {
+    return this.fields.findIndex(s => s.getName === fieldName)
+  }
+
+  /** returns a string with INSERT mysql compliant query.
+   * If there are no fileds or values in the table, throws an error! 
+   */
   public queryInsert(): string {
     if (this.fields.length === 0) {
       throw Error(EMPTY_TABLE)
     }
     if (this.values.length === 0) { throw Error(EMPTY_VALUES) }
     return createInsert(this.name, this.fieldsArray, this.values)
+  }
+
+  /** check if rowObject has the same keys with table fields */
+  private checkIfDataIsValid(row: IJsonObject): boolean {
+    const rowIds = Object.keys(row)
+    if (rowIds.length !== this.fields.length) { return false } else {
+      return helpers.equalArrays(rowIds, this.fieldsArray)
+    }
+  }
+
+  get dbValues(): IJsonObject[] {
+    return this.values
   }
 }
 
@@ -74,42 +124,6 @@ export const fillTableFromRespond = <T extends DbTbl>(c: new () => T, respond: a
   return t
 }
 
-// export const createfromRespond = <T extends DbTbl>(c: new () => T, respond: any): T => {
-//   if (!checkRespond(respond)) {
-//     throw new Error(MALLFORMED_RESPONSE_ERROR)
-//   }
-//   return fillTableFromRespond(c, respond)
-// }
-
-// export const Insert = (cat: number, text: string, date: string): string => {
-//   return createInsert(
-//     'texts',
-//     ['categoryId', 'text', 'date', 'textId'],
-//     [
-//       { categoryId: 3, text: 'tria', date: '2013-04-05', textId: 23 },
-//       { categoryId: 4, text: 'tessera', date: '2013-04-05', textId: 24 },
-//     ],
-//   )
-
-//   //   return `INSERT INTO texts (categoryId, text, date,textId)
-//   // SELECT ${cat} as categoryId,
-//   // '${text}' as text,
-//   // '${date}' as date,
-//   // IFNULL(max(textId)+1, 1) from  texts where categoryId = ${cat}`
-// }
-
-// export const Delete = (id: number): string => {
-//   return createDelete('texts', ['id'], [id])
-// }
-
-// const createDelete = (from: string, wheres: string[], values: any[]): string => {
-//   if (wheres.length !== values.length) {
-//     throw Error(TABLES_LENGTH_DIFFERS)
-//   }
-//   let retVal = `DELETE FROM ${from} WHERE `
-//   wheres.map((value, index) => (retVal += `${value} = ${values[index]}`))
-//   return retVal
-// }
 
 /** Create an INSERT query for the table
  *
@@ -117,7 +131,7 @@ export const fillTableFromRespond = <T extends DbTbl>(c: new () => T, respond: a
  * @param columns
  * @param values in form {tableName: value}
  */
-export const createInsert = (to: string, columns: string[], values: IJsonObject[]): string => {
+const createInsert = (to: string, columns: string[], values: IJsonObject[]): string => {
   let retVal = `INSERT INTO ${to} (`
   columns.map((value, index) => {
     retVal += index + 1 !== columns.length ? `${value}, ` : `${value}) VALUES `

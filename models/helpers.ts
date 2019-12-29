@@ -1,5 +1,7 @@
 import isEqual from 'lodash.isequal'
+import { IJsonObject } from './types'
 
+/** using lodash isEqual to find if 2 arrays are equal */
 export const equalArrays = (a: any[] | null = null, b: any[] | null = null): boolean => {
     if (a === null || b === null) {
         return false
@@ -31,4 +33,20 @@ const sort = (a: any, b: any) => {
         if (Array.isArray(b)){return 1}
         return 0
     }
+}
+/** delete a property from all objects in array o objects */
+export const deleteProperty= (id:string, obj:IJsonObject[]) =>{
+    const retVal:object[] = []
+    if (obj.length !== 0){
+        for (let i = 0; i !== obj.length; i++)
+        {
+            const ob = Object.assign({},obj[i])
+            if (id in ob){
+                delete ob[id]
+            }
+            retVal.push(ob)
+        }
+    }
+    return retVal
+
 }

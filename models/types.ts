@@ -23,3 +23,7 @@ export interface ICategory extends IBaseDBTable {
 export interface IJsonObject {
   [key: string]: any
 }
+
+export interface IGeneralRespond<T>{
+  data: T[]
+}

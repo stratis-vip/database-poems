@@ -18,15 +18,15 @@ export default class Field {
       this.size = 65535
     }
   }
-  
+
   /** Returns field's name */
   get getName(): string {
     return this.name
   }
 
-   set setAutoInc(value:boolean) {
-    if (this.type === DataTypes.Numeral && value !== this.autoInc){
-        this.autoInc = value
+  set setAutoInc(value: boolean) {
+    if (this.type === DataTypes.Numeral && value !== this.autoInc) {
+      this.autoInc = value
     }
   }
   /** check if value is in the acceptable limits
