@@ -1,5 +1,5 @@
 import { EMPTY_TABLE, EMPTY_VALUES, FIELD_NOT_EXIST } from '../consts'
-import * as helpers from '../helpers'
+import {equalArrays, getRowIds} from '../helpers'
 import { deleteProperty, joinWithAND, joinWithComma } from '../helpers'
 import { IGeneralRespond, IJsonObject } from '../types'
 import { DataTypes } from './data-types'
@@ -169,7 +169,7 @@ export default class DbTbl {
   private checkIfDataIsValid(row: IJsonObject): boolean {
     const rowIds = getRowIds(row)
     if (rowIds.length !== this.fields.length) { return false } else {
-      return helpers.equalArrays(rowIds, this.fieldsArray)
+      return equalArrays(rowIds, this.fieldsArray)
     }
   }
 
@@ -214,7 +214,5 @@ const createInsert = (to: string, columns: string[], values: IJsonObject[]): str
   return retVal
 }
 
-function getRowIds(row: IJsonObject) {
-  return Object.keys(row)
-}
+
 

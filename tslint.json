@@ -1,7 +1,9 @@
 {
-   "extends": ["tslint:recommended", "tslint-config-prettier"],
- "linterOptions": {
-   "no-console": false
- }
-   
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-prettier"
+  ],
+  "linterOptions": {
+    "no-console": false
+  }
 }

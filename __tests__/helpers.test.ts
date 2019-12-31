@@ -1,4 +1,4 @@
-import {deleteProperty, equalArrays, joinWithComma, joinWithAND} from '../models/helpers'
+import {deleteProperty, equalArrays, joinWithAND, joinWithComma} from '../models/helpers'
 
 const a = [1,2,3]
 const b = [3,1,2]

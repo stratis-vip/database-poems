@@ -17,7 +17,7 @@ export const equalArrays = (a: any[] | null = null, b: any[] | null = null): boo
     //     }else
     //     if (aCloned[i] !== bCloned[i]) { return false }
     // }
-    return isEqual(aCloned,bCloned)
+    return isEqual(aCloned, bCloned)
 }
 
 const sort = (a: any, b: any) => {
@@ -26,22 +26,21 @@ const sort = (a: any, b: any) => {
         if (a === b) { return 0 } else {
             return a < b ? -1 : 1
         }
-    }else {
-        if (Array.isArray(a)){
+    } else {
+        if (Array.isArray(a)) {
             return -1
         }
-        if (Array.isArray(b)){return 1}
+        if (Array.isArray(b)) { return 1 }
         return 0
     }
 }
 /** delete a property from all objects in array o objects */
-export const deleteProperty= (id:string, obj:IJsonObject[]) =>{
-    const retVal:object[] = []
-    if (obj.length !== 0){
-        for (let i = 0; i !== obj.length; i++)
-        {
-            const ob = Object.assign({},obj[i])
-            if (id in ob){
+export const deleteProperty = (id: string, obj: IJsonObject[]) => {
+    const retVal: object[] = []
+    if (obj.length !== 0) {
+        for (let i = 0; i !== obj.length; i++) {
+            const ob = Object.assign({}, obj[i])
+            if (id in ob) {
                 delete ob[id]
             }
             retVal.push(ob)
@@ -51,12 +50,12 @@ export const deleteProperty= (id:string, obj:IJsonObject[]) =>{
 
 }
 
-const joinWithValue = (row:any[], value:string):string=>{
+export const joinWithCustomValue = (row: any[], value: string): string => {
     let retVal = ``
-    if (row && row.length !== 0){
-        for (let i=0; i !== row.length; i++){
+    if (row && row.length !== 0) {
+        for (let i = 0; i !== row.length; i++) {
             retVal += row[i].toString()
-            if (i+1 < row.length){
+            if (i + 1 < row.length) {
                 retVal += `${value} `
             }
         }
@@ -64,10 +63,26 @@ const joinWithValue = (row:any[], value:string):string=>{
     return retVal
 }
 
-export const joinWithComma = (row:any[]):string=>{
-    return joinWithValue(row, ',')
+export const joinWithComma = (row: any[]): string => {
+    return joinWithCustomValue(row, ',')
 }
 
-export const joinWithAND = (row:any[]):string=>{
-    return joinWithValue(row, ' AND')
+export const joinWithAND = (row: any[]): string => {
+    return joinWithCustomValue(row, ' AND')
+}
+
+export const getRowIds = (row: IJsonObject): string[] => {
+    return Object.keys(row)
+}
+
+export const checkArrayForObject = (array: IJsonObject[], obj: IJsonObject): number => {
+    if (array.length !== 0) {
+        const property = getRowIds(obj)[0]
+        for (let i = 0; i !== array.length; ++i) {
+            if (array[i][property] === obj[property]) {
+                return i;
+            }
+        }
+    }
+    return -1
 }
