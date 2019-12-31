@@ -1,5 +1,5 @@
 import { EMPTY_TABLE, EMPTY_VALUES, FIELD_NOT_EXIST } from '../consts'
-import {equalArrays, getRowIds} from '../helpers'
+import { equalArrays, getRowIds } from '../helpers'
 import { deleteProperty, joinWithAND, joinWithComma } from '../helpers'
 import { IGeneralRespond, IJsonObject } from '../types'
 import { DataTypes } from './data-types'
@@ -19,7 +19,7 @@ export default class DbTbl {
 
   public fillTable(res: IGeneralRespond<any>): number {
     const { data } = res
-    let count = 0;
+    let count = 0
 
     if (data.length !== 0) {
       for (let i = 0; i !== data.length; i++) {
@@ -57,8 +57,10 @@ export default class DbTbl {
     if (this.findFieldIndex(fieldName) >= 0) {
       removedFieldsCount = this.fields.splice(retVal, 1).length
       deleteProperty(fieldName, this.values)
-      this.indices.splice(this.indices.findIndex(v => fieldName === v), 1)
-
+      this.indices.splice(
+        this.indices.findIndex(v => fieldName === v),
+        1,
+      )
     }
     return removedFieldsCount
   }
@@ -103,18 +105,20 @@ export default class DbTbl {
   }
 
   /** returns a string with INSERT mysql compliant query.
-   * If there are no fileds or values in the table, throws an error! 
+   * If there are no fileds or values in the table, throws an error!
    */
   public queryInsert(): string {
     if (this.fields.length === 0) {
       throw Error(EMPTY_TABLE)
     }
-    if (this.values.length === 0) { throw Error(EMPTY_VALUES) }
+    if (this.values.length === 0) {
+      throw Error(EMPTY_VALUES)
+    }
     return createInsert(this.name, this.fieldsArray, this.values)
   }
 
   /** returns a string with INSERT mysql compliant query.
-   * If there are no fileds or values in the table, throws an error! 
+   * If there are no fileds or values in the table, throws an error!
    */
   public queryDelete(column: string, value: any): string {
     if (this.findFieldIndex(column) === -1) {
@@ -138,7 +142,7 @@ export default class DbTbl {
     return `UPDATE ${this.name} SET ${joinWithComma(ar)} WHERE ${id} in ('${idValue}')`
   }
 
-  public querySelect(columns?: string[], from?: string[], where?: Array<{ column: string, value: any }> | []): string {
+  public querySelect(columns?: string[], from?: string[], where?: Array<{ column: string; value: any }> | []): string {
     let retVal = 'SELECT '
     if (!columns || columns.length === 0) {
       retVal += `* `
@@ -152,11 +156,11 @@ export default class DbTbl {
       retVal += joinWithComma(from!)
     }
 
-    if (!where || (where && where.length === 0) ){
+    if (!where || (where && where.length === 0)) {
       retVal += ``
     } else {
       const ar = []
-      for (let i=0; i!== where.length; ++i){
+      for (let i = 0; i !== where.length; ++i) {
         ar.push(`${where[i].column} in ('${where[i].value}')`)
       }
       retVal += ` WHERE ${joinWithAND(ar)}`
@@ -164,11 +168,12 @@ export default class DbTbl {
     return retVal
   }
 
-
   /** check if rowObject has the same keys with table fields */
   private checkIfDataIsValid(row: IJsonObject): boolean {
     const rowIds = getRowIds(row)
-    if (rowIds.length !== this.fields.length) { return false } else {
+    if (rowIds.length !== this.fields.length) {
+      return false
+    } else {
       return equalArrays(rowIds, this.fieldsArray)
     }
   }
@@ -183,7 +188,6 @@ export const fillTableFromRespond = <T extends DbTbl>(c: new () => T, respond: a
   t.fillTable(respond)
   return t
 }
-
 
 /** Create an INSERT query for the table
  *
@@ -213,6 +217,3 @@ const createInsert = (to: string, columns: string[], values: IJsonObject[]): str
   })
   return retVal
 }
-
-
-

@@ -8,7 +8,13 @@ export default class Field {
   private allowNull: boolean
   private autoInc: boolean = false
 
-  constructor(name: string, type: DataTypes, autoInc: boolean = false, allowNull: boolean = false, size: Nullable<number> = null) {
+  constructor(
+    name: string,
+    type: DataTypes,
+    autoInc: boolean = false,
+    allowNull: boolean = false,
+    size: Nullable<number> = null,
+  ) {
     this.name = name
     this.type = type
     this.size = size

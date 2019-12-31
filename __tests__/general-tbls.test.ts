@@ -11,7 +11,7 @@ beforeEach(() => {
   f = new Field('testField', DataTypes.Characters, false, false, 100)
   f1 = new Field('testFieldOne', DataTypes.Characters, false, false, 130)
   t = new DbTbl('Test')
-});
+})
 
 describe('create new Object', () => {
   test('Creates initial object', () => {
@@ -63,7 +63,9 @@ describe('Data operations', () => {
 
   test('Add Data Error', () => {
     expect(t.addData({ id: 1, description: 'esc' })).toBe(0)
-    expect(() => { t.queryInsert() }).toThrowError(EMPTY_VALUES)
+    expect(() => {
+      t.queryInsert()
+    }).toThrowError(EMPTY_VALUES)
   })
 
   test('Add Data 1', () => {
@@ -74,51 +76,61 @@ describe('Data operations', () => {
 })
 
 describe('Queries', () => {
-  test('Create insert Query', ()=>{
+  test('Create insert Query', () => {
     t.addField(f)
     t.addData({ id: 1, testField: 'test 1' })
     expect(t.queryInsert()).toBe(`INSERT INTO Test (id, testField) VALUES (1, 'test 1')`)
-    expect(t.queryDelete('id',1)).toBe(`DELETE FROM Test WHERE id in ('1')`)
-    expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
+    expect(t.queryDelete('id', 1)).toBe(`DELETE FROM Test WHERE id in ('1')`)
+    expect(() => t.queryDelete('ids', 1)).toThrowError(FIELD_NOT_EXIST)
   })
 
-  test('Create Delete Query', ()=>{
+  test('Create Delete Query', () => {
     t.addField(f)
     t.addData({ id: 1, testField: 'test 1' })
-    expect(t.queryDelete('id',1)).toBe(`DELETE FROM Test WHERE id in ('1')`)
-    expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
+    expect(t.queryDelete('id', 1)).toBe(`DELETE FROM Test WHERE id in ('1')`)
+    expect(() => t.queryDelete('ids', 1)).toThrowError(FIELD_NOT_EXIST)
   })
 
-  test('Create Update Query', ()=>{
-    t.addFields([f,f1])
-    t.addData({ id: 1, testField: 'test 1' ,testFieldOne:'testfieldone 1'})
-    expect(t.queryUpdate({testField: 'dokimes', testFieldOne: 'dokimes one'},'id',1))
-    .toBe(`UPDATE Test SET testField = 'dokimes', testFieldOne = 'dokimes one' WHERE id in ('1')`)
-    expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
-    expect(()=>t.queryUpdate({testerField: 'dokimes', testFieldOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
-    expect(()=>t.queryUpdate({testField: 'dokimes', testFielerdOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
-    expect(()=>t.queryUpdate({testField: 'dokimes', testFieldOne: 'dokimes one'},'ids',1)).toThrowError(FIELD_NOT_EXIST)
+  test('Create Update Query', () => {
+    t.addFields([f, f1])
+    t.addData({ id: 1, testField: 'test 1', testFieldOne: 'testfieldone 1' })
+    expect(t.queryUpdate({ testField: 'dokimes', testFieldOne: 'dokimes one' }, 'id', 1)).toBe(
+      `UPDATE Test SET testField = 'dokimes', testFieldOne = 'dokimes one' WHERE id in ('1')`,
+    )
+    expect(() => t.queryDelete('ids', 1)).toThrowError(FIELD_NOT_EXIST)
+    expect(() => t.queryUpdate({ testerField: 'dokimes', testFieldOne: 'dokimes one' }, 'id', 1)).toThrowError(
+      FIELD_NOT_EXIST,
+    )
+    expect(() => t.queryUpdate({ testField: 'dokimes', testFielerdOne: 'dokimes one' }, 'id', 1)).toThrowError(
+      FIELD_NOT_EXIST,
+    )
+    expect(() => t.queryUpdate({ testField: 'dokimes', testFieldOne: 'dokimes one' }, 'ids', 1)).toThrowError(
+      FIELD_NOT_EXIST,
+    )
   })
 
-  test('Create Select Query', ()=>{
-    t.addFields([f,f1])
-    t.addData({ id: 1, testField: 'test 1' ,testFieldOne:'testfieldone 1'})
+  test('Create Select Query', () => {
+    t.addFields([f, f1])
+    t.addData({ id: 1, testField: 'test 1', testFieldOne: 'testfieldone 1' })
     expect(t.querySelect()).toBe(`SELECT * FROM Test`)
     expect(t.querySelect([])).toBe(`SELECT * FROM Test`)
-    expect(t.querySelect([],[])).toBe(`SELECT * FROM Test`)
-    expect(t.querySelect([],[],[])).toBe(`SELECT * FROM Test`)
-    expect(t.querySelect([],[],[{column:'id', value:1}])).toBe(`SELECT * FROM Test WHERE id in ('1')`)
-    expect(t.querySelect([],[],[{column:'id', value:1}, {column:'testField', value:'test 1'}]))
-    .toBe(`SELECT * FROM Test WHERE id in ('1') AND testField in ('test 1')`)
-
-
+    expect(t.querySelect([], [])).toBe(`SELECT * FROM Test`)
+    expect(t.querySelect([], [], [])).toBe(`SELECT * FROM Test`)
+    expect(t.querySelect([], [], [{ column: 'id', value: 1 }])).toBe(`SELECT * FROM Test WHERE id in ('1')`)
+    expect(
+      t.querySelect(
+        [],
+        [],
+        [
+          { column: 'id', value: 1 },
+          { column: 'testField', value: 'test 1' },
+        ],
+      ),
+    ).toBe(`SELECT * FROM Test WHERE id in ('1') AND testField in ('test 1')`)
 
     // expect(()=>t.queryDelete('ids',1)).toThrowError(FIELD_NOT_EXIST)
     // expect(()=>t.queryUpdate({testerField: 'dokimes', testFieldOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
     // expect(()=>t.queryUpdate({testField: 'dokimes', testFielerdOne: 'dokimes one'},'id',1)).toThrowError(FIELD_NOT_EXIST)
     // expect(()=>t.queryUpdate({testField: 'dokimes', testFieldOne: 'dokimes one'},'ids',1)).toThrowError(FIELD_NOT_EXIST)
   })
-
-
 })
-
